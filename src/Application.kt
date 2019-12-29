@@ -7,11 +7,9 @@ import io.ktor.features.CallLogging
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
 import io.ktor.gson.gson
-import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.receive
 import io.ktor.response.respond
-import io.ktor.response.respondText
 import io.ktor.routing.*
 import java.text.DateFormat
 
@@ -39,17 +37,28 @@ fun Application.module(testing: Boolean = false) {
 
 fun Route.votes(votingService: VotingService) {
     route("") {
-        get("/mariska") {
-            call.respondText("HELLO Mariska!", contentType = ContentType.Text.Plain)
-        }
-
-        post("/v1/voting") {
-            val newVoting = call.receive<NewVoting>()
-            call.respond(votingService.addVoting(newVoting))
-        }
 
         get("/v1/voting") {
-            call.respond(votingService.getAllVoting())
+            val addVoting = votingService.addVoting()
+            if (addVoting != null) {
+                call.respond(addVoting)
+            } else {
+                call.respond(HttpStatusCode.BadRequest)
+            }
+        }
+
+        get("/v1/voting/{passCode}") {
+            val passCode = call.parameters["passCode"]
+            if (passCode == null) {
+                call.respond(HttpStatusCode.BadRequest)
+            } else {
+                val enterVoting = votingService.enterVoting(passCode)
+                if (enterVoting == null) {
+                    call.respond(HttpStatusCode.NotFound)
+                } else {
+                    call.respond(enterVoting)
+                }
+            }
         }
 
         delete("/v1/voting/{votingId}") {

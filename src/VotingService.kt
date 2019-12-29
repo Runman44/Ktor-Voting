@@ -2,17 +2,22 @@ package com.example
 
 import com.example.DatabaseFactory.dbQuery
 import org.jetbrains.exposed.sql.*
+import kotlin.random.Random
 
 class VotingService {
 
-    suspend fun addVoting(newVoting: NewVoting): Voting {
-        var key: Int? = 0
+    suspend fun addVoting(): Voting? {
+        var key = 0
         dbQuery {
             key = Votings.insert({
-                it[type] = newVoting.type
+                it[passCode] = generatePassCode()
             }) get Votings.id
         }
-        return getVoting(key!!)!!
+        return getVoting(key)
+    }
+
+    private fun generatePassCode(): String {
+        return "MrAnderson" + Random.nextInt(0,10000)
     }
 
     suspend fun getVoting(id: Int): Voting? = dbQuery {
@@ -24,6 +29,13 @@ class VotingService {
 
     suspend fun deleteVoting(votingId: Int): Boolean = dbQuery {
         Votings.deleteWhere { Votings.id eq votingId } > 0
+    }
+
+    suspend fun enterVoting(passCode : String) : Voting? = dbQuery {
+        Votings.select {
+            (Votings.passCode eq passCode)
+        }.mapNotNull { toVoting(it) }
+            .singleOrNull()
     }
 
     suspend fun addVote(votingIdz : Int, vote: NewVote): Vote {
@@ -55,7 +67,7 @@ class VotingService {
     private fun toVoting(row: ResultRow): Voting =
         Voting(
             id = row[Votings.id],
-            type = row[Votings.type]
+            passCode = row[Votings.passCode]
         )
 
     private fun toVotes(row: ResultRow): Vote =
