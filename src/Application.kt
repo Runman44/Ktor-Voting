@@ -39,9 +39,19 @@ fun Route.votes(votingService: VotingService) {
     route("") {
 
         get("/v1/voting") {
-            val addVoting = votingService.addVoting()
-            if (addVoting != null) {
-                call.respond(addVoting)
+            val allVotings = votingService.getAllVoting()
+            call.respond(allVotings)
+        }
+
+        post("/v1/voting") {
+            val description = call.receive<NewVoting>()
+            if (description != null) {
+                val addVoting = votingService.createVoting(description)
+                if (addVoting != null) {
+                    call.respond(addVoting)
+                } else {
+                    call.respond(HttpStatusCode.BadRequest)
+                }
             } else {
                 call.respond(HttpStatusCode.BadRequest)
             }

@@ -6,10 +6,11 @@ import kotlin.random.Random
 
 class VotingService {
 
-    suspend fun addVoting(): Voting? {
+    suspend fun createVoting(voteDescription : NewVoting): Voting? {
         var key = 0
         dbQuery {
             key = Votings.insert({
+                it[description] = voteDescription.description
                 it[passCode] = generatePassCode()
             }) get Votings.id
         }
@@ -67,6 +68,7 @@ class VotingService {
     private fun toVoting(row: ResultRow): Voting =
         Voting(
             id = row[Votings.id],
+            description = row[Votings.description],
             passCode = row[Votings.passCode]
         )
 
