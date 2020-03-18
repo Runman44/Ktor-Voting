@@ -1,1 +1,1 @@
-web: build/install/kotlinserver/bin/kotlinserver
+web: java -jar build/libs/ktor-example-0.0.1-all.jar
