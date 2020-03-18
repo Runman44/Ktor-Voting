@@ -1,1 +1,1 @@
-web: java -jar ktor-example-0.0.1-all.jar
+web: java -jar build/libs/ktor-example-0.0.1.jar
