@@ -1,1 +1,1 @@
-web: java -jar target/ktor-example-0.0.1.jar
+web: java -jar target/ktor-example-0.0.1-all.jar
