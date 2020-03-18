@@ -2,20 +2,21 @@ package com.example
 
 import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.Table
-import kotlin.random.Random
 
 data class NewVote(val voter: String, val votes: String)
-data class NewVoting(val description: String)
+data class NewVoting(val description: String, val creator: String)
 
 object Votings : Table() {
     val id = integer("id").primaryKey().autoIncrement()
     val description = varchar("description", 255)
+    val creator = varchar("creator", 255)
     val passCode = varchar("passCode", 255)
 }
 
 data class Voting(
     val id: Int,
     val description : String,
+    val creator : String,
     val passCode: String
 )
 

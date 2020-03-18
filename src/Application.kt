@@ -3,10 +3,13 @@ package com.example
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
+import io.ktor.features.CORS
 import io.ktor.features.CallLogging
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
 import io.ktor.gson.gson
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.receive
 import io.ktor.response.respond
@@ -20,7 +23,18 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 fun Application.module(testing: Boolean = false) {
     install(DefaultHeaders)
     install(CallLogging)
-
+    install(CORS)
+    {
+//        method(HttpMethod.Options)
+//        header(HttpHeaders.XForwardedProto)
+        anyHost()
+        host("localhost:8080")
+        // host("my-host:80")
+        // host("my-host", subDomains = listOf("www"))
+        // host("my-host", schemes = listOf("http", "https"))
+        allowCredentials = true
+        allowNonSimpleContentTypes = true
+    }
     install(Routing) {
         votes(VotingService())
     }
@@ -44,14 +58,10 @@ fun Route.votes(votingService: VotingService) {
         }
 
         post("/v1/voting") {
-            val description = call.receive<NewVoting>()
-            if (description != null) {
-                val addVoting = votingService.createVoting(description)
-                if (addVoting != null) {
-                    call.respond(addVoting)
-                } else {
-                    call.respond(HttpStatusCode.BadRequest)
-                }
+            val newVoting = call.receive<NewVoting>()
+            val addVoting = votingService.createVoting(newVoting)
+            if (addVoting != null) {
+                call.respond(addVoting)
             } else {
                 call.respond(HttpStatusCode.BadRequest)
             }

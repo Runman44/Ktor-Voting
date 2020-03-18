@@ -11,6 +11,7 @@ class VotingService {
         dbQuery {
             key = Votings.insert({
                 it[description] = voteDescription.description
+                it[creator] = voteDescription.creator
                 it[passCode] = generatePassCode()
             }) get Votings.id
         }
@@ -69,6 +70,7 @@ class VotingService {
         Voting(
             id = row[Votings.id],
             description = row[Votings.description],
+            creator = row[Votings.creator],
             passCode = row[Votings.passCode]
         )
 
