@@ -27,13 +27,7 @@ fun Application.module(testing: Boolean = false) {
         method(HttpMethod.Delete)
         method(HttpMethod.Patch)
         method(HttpMethod.Options)
-//        method(HttpMethod.Options)
-//        header(HttpHeaders.XForwardedProto)
         anyHost()
-//        host("localhost:8080")
-        // host("my-host:80")
-        // host("my-host", subDomains = listOf("www"))
-        // host("my-host", schemes = listOf("http", "https"))
         allowCredentials = true
         allowNonSimpleContentTypes = true
     }
