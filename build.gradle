@@ -17,10 +17,6 @@ group 'com.example'
 version '0.0.1'
 mainClassName = "io.ktor.server.netty.EngineMain"
 
-task stage {
-    dependsOn installDist
-}
-
 shadowJar {
     manifest {
         attributes 'Main-Class': mainClassName

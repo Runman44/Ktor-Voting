@@ -8,7 +8,6 @@ import io.ktor.features.CallLogging
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
 import io.ktor.gson.gson
-import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.receive
@@ -25,10 +24,13 @@ fun Application.module(testing: Boolean = false) {
     install(CallLogging)
     install(CORS)
     {
+        method(HttpMethod.Delete)
+        method(HttpMethod.Patch)
+        method(HttpMethod.Options)
 //        method(HttpMethod.Options)
 //        header(HttpHeaders.XForwardedProto)
         anyHost()
-        host("localhost:8080")
+//        host("localhost:8080")
         // host("my-host:80")
         // host("my-host", subDomains = listOf("www"))
         // host("my-host", schemes = listOf("http", "https"))
